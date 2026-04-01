@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PlacementLink{% endblock %}</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar glassmorphism">
+        <div class="nav-brand">
+            <i class="fas fa-rocket"></i> PlacementLink
+        </div>
+        <div class="nav-links">
+            {% if session.get('user_id') %}
+                {% if session.get('role') == 'student' %}
+                    <a href="/student/dashboard" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
+                    <a href="/student/jobs" class="nav-link"><i class="fas fa-briefcase"></i> Opportunities</a>
+                    <a href="/student/applications" class="nav-link"><i class="fas fa-file-alt"></i> Applications</a>
+                    <a href="/student/resources" class="nav-link"><i class="fas fa-book"></i> Resources</a>
+                    <a href="/student/feedback" class="nav-link"><i class="fas fa-comment"></i> Feedback</a>
+                    <a href="/student/profile" class="nav-link"><i class="fas fa-user"></i> My Profile</a>
+                {% elif session.get('role') == 'mentor' %}
+                    <a href="/mentor/dashboard" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
+                    <a href="/mentor/students" class="nav-link"><i class="fas fa-users"></i> Students</a>
+                    <a href="/mentor/requests" class="nav-link"><i class="fas fa-envelope-open-text"></i> Requests</a>
+                {% elif session.get('role') == 'admin' %}
+                    <a href="/admin/dashboard" class="nav-link"><i class="fas fa-chart-line"></i> Analytics</a>
+                    <a href="/admin/companies" class="nav-link"><i class="fas fa-building"></i> Companies</a>
+                    <a href="/admin/jobs" class="nav-link"><i class="fas fa-briefcase"></i> Post Jobs</a>
+                    <a href="/admin/utilities" class="nav-link"><i class="fas fa-tools"></i> Utilities</a>
+                {% endif %}
+                <span class="user-badge"><i class="fas fa-user-circle"></i> {{ session.get('username') }}</span>
+                <a href="/auth/logout" class="nav-btn btn-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            {% else %}
+                <a href="/auth/login" class="nav-link">Login</a>
+                <a href="/auth/register" class="nav-btn">Register</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <main class="container page-transition">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-container">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        <i class="fas fa-info-circle"></i> {{ message }}
+                    </div>
+                {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

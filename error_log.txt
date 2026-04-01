@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "C:\Users\sweth\web_6th\college_placement_system\app.py", line 35, in <module>
+    app = create_app()
+  File "C:\Users\sweth\web_6th\college_placement_system\app.py", line 12, in create_app
+    from routes.mentor_routes import mentor_bp
+  File "C:\Users\sweth\web_6th\college_placement_system\routes\mentor_routes.py", line 4, in <module>
+    from models.user_model import get_mentor_by_user_id, get_students_by_mentor
+ImportError: cannot import name 'get_mentor_by_user_id' from 'models.user_model' (C:\Users\sweth\web_6th\college_placement_system\models\user_model.py)
