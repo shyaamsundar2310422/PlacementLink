@@ -1,4 +1,4 @@
-<h1 align="center">🧠 PlacementLink</h1>
+<h1 align="center"> PlacementLink</h1>
 <h3 align="center">Intelligent Placement & Career Development Management System</h3>
 
 <p align="center">
@@ -7,9 +7,9 @@ A Flask + MySQL based web application to streamline and automate the college pla
 
 <hr>
 
-<h2>🚀 Features</h2>
+<h2> Features</h2>
 
-<h3>👨‍🎓 Student</h3>
+<h3> Student</h3>
 <ul>
 <li>Register and log in using email or username</li>
 <li>Complete and update profile</li>
@@ -20,14 +20,14 @@ A Flask + MySQL based web application to streamline and automate the college pla
 <li>Submit post-placement feedback</li>
 </ul>
 
-<h3>👨‍🏫 Mentor</h3>
+<h3> Mentor</h3>
 <ul>
 <li>View assigned students</li>
 <li>Access student profiles</li>
 <li>Approve or reject profile update requests</li>
 </ul>
 
-<h3>🛠️ Admin</h3>
+<h3> Admin</h3>
 <ul>
 <li>Manage companies and job postings</li>
 <li>View applicants and update application stages</li>
@@ -38,7 +38,7 @@ A Flask + MySQL based web application to streamline and automate the college pla
 
 <hr>
 
-<h2>🏗️ System Architecture</h2>
+<h2> System Architecture</h2>
 
 <p><b>Frontend:</b> HTML5, CSS3, JavaScript<br>
 <b>Backend:</b> Python (Flask Framework)<br>
@@ -54,7 +54,7 @@ A Flask + MySQL based web application to streamline and automate the college pla
 
 <hr>
 
-<h2>🧩 Backend Structure (Flask Blueprints)</h2>
+<h2> Backend Structure (Flask Blueprints)</h2>
 
 <ul>
 <li><b>auth_routes.py</b> – Authentication and user management</li>
@@ -65,7 +65,7 @@ A Flask + MySQL based web application to streamline and automate the college pla
 
 <hr>
 
-<h2>🗄️ Database Design</h2>
+<h2> Database Design</h2>
 
 <ul>
 <li>users – Authentication and roles</li>
@@ -81,7 +81,7 @@ A Flask + MySQL based web application to streamline and automate the college pla
 
 <hr>
 
-<h2>🔐 Authentication & Authorization</h2>
+<h2> Authentication & Authorization</h2>
 
 <ul>
 <li>Login using email/username and password</li>
@@ -92,7 +92,7 @@ A Flask + MySQL based web application to streamline and automate the college pla
 
 <hr>
 
-<h2>⚙️ Key Functional Highlights</h2>
+<h2> Key Functional Highlights</h2>
 
 <ul>
 <li>Transactional student registration</li>
@@ -105,7 +105,7 @@ A Flask + MySQL based web application to streamline and automate the college pla
 
 <hr>
 
-<h2>🎯 Job Eligibility Logic</h2>
+<h2> Job Eligibility Logic</h2>
 
 <ul>
 <li>Academic performance (CGPA)</li>
@@ -117,7 +117,7 @@ A Flask + MySQL based web application to streamline and automate the college pla
 
 <hr>
 
-<h2>🤖 Machine Learning Integration</h2>
+<h2> Machine Learning Integration</h2>
 
 <ul>
 <li><b>Algorithm:</b> Logistic Regression</li>
@@ -128,7 +128,7 @@ A Flask + MySQL based web application to streamline and automate the college pla
 
 <hr>
 
-<h2>🔄 Workflow</h2>
+<h2> Workflow</h2>
 
 <ul>
 <li>Student registration and profile creation</li>
@@ -141,7 +141,7 @@ A Flask + MySQL based web application to streamline and automate the college pla
 
 <hr>
 
-<h2>🛠️ Installation & Setup</h2>
+<h2> Installation & Setup</h2>
 
 <pre>
 # Clone the repository
@@ -169,7 +169,7 @@ python .\app.py
 
 <hr>
 
-<h2>🗄️ Database Configuration</h2>
+<h2> Database Configuration</h2>
 
 <p>Ensure MySQL server is running. Update your database credentials in <b>config.py</b></p>
 
@@ -182,7 +182,7 @@ DB_NAME = "placement_db"
 
 <hr>
 
-<h2>🌐 Access the Application</h2>
+<h2> Access the Application</h2>
 
 <p>Open your browser and go to:</p>
 
@@ -190,7 +190,7 @@ DB_NAME = "placement_db"
 
 <hr>
 
-<h2>⚠️ Notes</h2>
+<h2> Notes</h2>
 
 <ul>
 <li>Make sure the virtual environment is activated before running the application</li>
@@ -211,7 +211,7 @@ python .\app.py
 
 <hr>
 
-<h2>🗄️ Database Configuration</h2>
+<h2> Database Configuration</h2>
 
 <pre>
 DB_HOST = "localhost"
@@ -222,13 +222,13 @@ DB_NAME = "placement_db"
 
 <hr>
 
-<h2>🌐 Access the Application</h2>
+<h2> Access the Application</h2>
 
 <p>http://127.0.0.1:5000/</p>
 
 <hr>
 
-<h2>⚠️ Notes</h2>
+<h2> Notes</h2>
 
 <ul>
 <li>Activate the virtual environment before running</li>
@@ -241,7 +241,7 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 <hr>
 
-<h2>📈 Future Enhancements</h2>
+<h2> Future Enhancements</h2>
 
 <ul>
 <li>JWT-based authentication</li>
@@ -254,7 +254,7 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 <hr>
 
-<h2>👥 Team</h2>
+<h2> Team</h2>
 
 <ul>
 <li>Shyaam Sundar M</li>
@@ -267,7 +267,7 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 <hr>
 
-<h2>📌 Conclusion</h2>
+<h2> Conclusion</h2>
 
 <p>
 PlacementLink provides a <b>centralized, scalable, and efficient solution</b> for managing placement activities. 
