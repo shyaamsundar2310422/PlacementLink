@@ -144,12 +144,65 @@ A Flask + MySQL based web application to streamline and automate the college pla
 <h2>🛠️ Installation & Setup</h2>
 
 <pre>
-cd "C:\Placement App\college_placement_system"
+# Clone the repository
+git clone https://github.com/your-username/placementlink.git
+cd placementlink
 
+# Create virtual environment
 py -3.11 -m venv .venv
+
+# Activate virtual environment
 .\.venv\Scripts\Activate.ps1
 
+# Install dependencies
 pip install -r requirements.txt
+
+# Initialize database
+python .\database\init_db.py
+
+# Seed sample data (optional)
+python .\seed_database.py
+
+# Run the application
+python .\app.py
+</pre>
+
+<hr>
+
+<h2>🗄️ Database Configuration</h2>
+
+<p>Ensure MySQL server is running. Update your database credentials in <b>config.py</b></p>
+
+<pre>
+DB_HOST = "localhost"
+DB_USER = "root"
+DB_PASSWORD = "your_password"
+DB_NAME = "placement_db"
+</pre>
+
+<hr>
+
+<h2>🌐 Access the Application</h2>
+
+<p>Open your browser and go to:</p>
+
+<p><b>http://127.0.0.1:5000/</b></p>
+
+<hr>
+
+<h2>⚠️ Notes</h2>
+
+<ul>
+<li>Make sure the virtual environment is activated before running the application</li>
+<li>Ensure MySQL service is running</li>
+<li>If PowerShell blocks execution:</li>
+</ul>
+
+<pre>
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+</pre>
+
+<hr>
 
 python .\database\init_db.py
 python .\seed_database.py
