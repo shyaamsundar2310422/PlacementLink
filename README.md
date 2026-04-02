@@ -145,7 +145,7 @@ A Flask + MySQL based web application to streamline and automate the college pla
 
 <pre>
 # Clone the repository
-git clone https://github.com/your-username/placementlink.git
+git clone https://github.com/shyaamsundar2310422/placementlink.git
 cd placementlink
 
 # Create virtual environment
