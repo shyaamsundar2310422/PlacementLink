@@ -1,155 +1,222 @@
-🧠 PlacementLink
-Intelligent Placement & Career Development Management System
+<h1 align="center">🧠 PlacementLink</h1>
+<h3 align="center">Intelligent Placement & Career Development Management System</h3>
 
-PlacementLink is a Flask + MySQL based web application designed to streamline and automate the college placement process. It provides a centralized platform for students, mentors, and administrators to manage the entire placement lifecycle efficiently.
+<p align="center">
+A Flask + MySQL based web application to streamline and automate the college placement process.
+</p>
 
-🚀 Features
-👨‍🎓 Student
-Register and log in using email or username
-Complete and update profile
-Browse job opportunities (even with incomplete profile)
-Apply for jobs and track application status
-Upload resume and supporting documents
-Receive notifications and placement updates
-Submit post-placement feedback
-👨‍🏫 Mentor
-View assigned students
-Access student profiles
-Approve or reject profile update requests
-🛠️ Admin
-Manage companies and job postings
-View applicants and update application stages
-Send notifications and broadcast messages
-Add training resources
-View placement analytics and reports
-🏗️ System Architecture
+<hr>
 
-The system follows a multi-tier architecture:
+<h2>🚀 Features</h2>
 
-Frontend: HTML5, CSS3, JavaScript
-Backend: Python (Flask Framework)
-Database: MySQL
-Layers:
-Presentation Layer – User interfaces and dashboards
-Application Layer – Business logic and workflow handling
-Data Layer – Database and data management
-Analytics Layer – Insights and reporting
-🧩 Backend Structure (Flask Blueprints)
+<h3>👨‍🎓 Student</h3>
+<ul>
+<li>Register and log in using email or username</li>
+<li>Complete and update profile</li>
+<li>Browse job opportunities (even with incomplete profile)</li>
+<li>Apply for jobs and track application status</li>
+<li>Upload resume and supporting documents</li>
+<li>Receive notifications and placement updates</li>
+<li>Submit post-placement feedback</li>
+</ul>
 
-The backend is modularized using Flask Blueprints:
+<h3>👨‍🏫 Mentor</h3>
+<ul>
+<li>View assigned students</li>
+<li>Access student profiles</li>
+<li>Approve or reject profile update requests</li>
+</ul>
 
-auth_routes.py – Authentication and user management
-student_routes.py – Student functionalities
-mentor_routes.py – Mentor operations
-admin_routes.py – Admin controls
-🗄️ Database Design
+<h3>🛠️ Admin</h3>
+<ul>
+<li>Manage companies and job postings</li>
+<li>View applicants and update application stages</li>
+<li>Send notifications and broadcast messages</li>
+<li>Add training resources</li>
+<li>View placement analytics and reports</li>
+</ul>
 
-Key tables include:
+<hr>
 
-users – Authentication and roles
-profiles – Student details
-companies & jobs – Job listings
-applications – Job applications
-application_status – Status tracking
-notifications – Alerts and updates
-documents – Resume and uploads
-training_resources – Learning materials
-feedback – Post-placement feedback
-🔐 Authentication & Authorization
-Login via email/username and password
-Session-based authentication using Flask
-Role-based access control (Student, Mentor, Admin)
-Secure route handling based on user roles
-⚙️ Key Functional Highlights
-Transactional student registration
-Automatic mentor assignment
-Flexible job browsing for incomplete profiles
-Real-time application tracking
-Email and in-app notification system
-Centralized placement operations dashboard
-🎯 Job Eligibility Logic
+<h2>🏗️ System Architecture</h2>
 
-Based on:
+<p><b>Frontend:</b> HTML5, CSS3, JavaScript<br>
+<b>Backend:</b> Python (Flask Framework)<br>
+<b>Database:</b> MySQL</p>
 
-Academic performance (CGPA)
-Skills and qualifications
-Branch or specialization
+<h3>Layers</h3>
+<ul>
+<li><b>Presentation Layer</b> – User interfaces and dashboards</li>
+<li><b>Application Layer</b> – Business logic and workflow handling</li>
+<li><b>Data Layer</b> – Database and data management</li>
+<li><b>Analytics Layer</b> – Insights and reporting</li>
+</ul>
 
-Ensures only eligible candidates apply for jobs
+<hr>
 
-🤖 Machine Learning Integration
-Algorithm: Logistic Regression
-Used to predict placement readiness
-Based on academic and skill-related data
-Provides probability-based insights
-🔄 Workflow
-Student registration and profile creation
-Eligibility evaluation
-Job browsing and application submission
-Application review and status updates
-Selection or rejection outcome
-Feedback collection and analytics
-🛠️ Installation & Setup
+<h2>🧩 Backend Structure (Flask Blueprints)</h2>
 
-Follow the steps below to run the project locally:
+<ul>
+<li><b>auth_routes.py</b> – Authentication and user management</li>
+<li><b>student_routes.py</b> – Student functionalities</li>
+<li><b>mentor_routes.py</b> – Mentor operations</li>
+<li><b>admin_routes.py</b> – Admin controls</li>
+</ul>
 
-📌 Prerequisites
-Python 3.11 installed
-MySQL Server installed and running
-Git installed
-⚙️ Setup Steps
-# Navigate to project directory
+<hr>
+
+<h2>🗄️ Database Design</h2>
+
+<ul>
+<li>users – Authentication and roles</li>
+<li>profiles – Student details</li>
+<li>companies & jobs – Job listings</li>
+<li>applications – Job applications</li>
+<li>application_status – Status tracking</li>
+<li>notifications – Alerts and updates</li>
+<li>documents – Resume and uploads</li>
+<li>training_resources – Learning materials</li>
+<li>feedback – Post-placement feedback</li>
+</ul>
+
+<hr>
+
+<h2>🔐 Authentication & Authorization</h2>
+
+<ul>
+<li>Login using email/username and password</li>
+<li>Session-based authentication using Flask</li>
+<li>Role-based access control (Student, Mentor, Admin)</li>
+<li>Secure route handling based on user roles</li>
+</ul>
+
+<hr>
+
+<h2>⚙️ Key Functional Highlights</h2>
+
+<ul>
+<li>Transactional student registration</li>
+<li>Automatic mentor assignment</li>
+<li>Flexible job browsing for incomplete profiles</li>
+<li>Real-time application tracking</li>
+<li>Email and in-app notification system</li>
+<li>Centralized placement operations dashboard</li>
+</ul>
+
+<hr>
+
+<h2>🎯 Job Eligibility Logic</h2>
+
+<ul>
+<li>Academic performance (CGPA)</li>
+<li>Skills and qualifications</li>
+<li>Branch or specialization</li>
+</ul>
+
+<p><b>Ensures only eligible candidates can apply for jobs</b></p>
+
+<hr>
+
+<h2>🤖 Machine Learning Integration</h2>
+
+<ul>
+<li><b>Algorithm:</b> Logistic Regression</li>
+<li>Predicts placement readiness</li>
+<li>Based on academic and skill-related data</li>
+<li>Provides probability-based insights</li>
+</ul>
+
+<hr>
+
+<h2>🔄 Workflow</h2>
+
+<ul>
+<li>Student registration and profile creation</li>
+<li>Eligibility evaluation</li>
+<li>Job browsing and application submission</li>
+<li>Application review and status updates</li>
+<li>Selection or rejection outcome</li>
+<li>Feedback collection and analytics</li>
+</ul>
+
+<hr>
+
+<h2>🛠️ Installation & Setup</h2>
+
+<pre>
 cd "C:\Placement App\college_placement_system"
 
-# Create virtual environment
 py -3.11 -m venv .venv
-
-# Activate virtual environment
 .\.venv\Scripts\Activate.ps1
 
-# Install dependencies
 pip install -r requirements.txt
 
-# Initialize database
 python .\database\init_db.py
-
-# Seed sample data
 python .\seed_database.py
-
-# Run the application
 python .\app.py
-🗄️ Database Configuration
+</pre>
 
-Ensure MySQL server is running. Update your database credentials in the configuration file (e.g., config.py)
+<hr>
 
-Example:
+<h2>🗄️ Database Configuration</h2>
+
+<pre>
 DB_HOST = "localhost"
 DB_USER = "root"
 DB_PASSWORD = "your_password"
 DB_NAME = "placement_db"
-🌐 Access the Application
+</pre>
 
-Open your browser and go to:
-👉 http://127.0.0.1:5000/
+<hr>
 
-⚠️ Notes
-Make sure the virtual environment is activated before running the app
-If PowerShell blocks execution, run:
+<h2>🌐 Access the Application</h2>
+
+<p>http://127.0.0.1:5000/</p>
+
+<hr>
+
+<h2>⚠️ Notes</h2>
+
+<ul>
+<li>Activate the virtual environment before running</li>
+<li>If PowerShell blocks execution:</li>
+</ul>
+
+<pre>
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
-📈 Future Enhancements
-JWT-based authentication
-REST API integration
-AI-based job recommendation system
-Resume parsing and skill extraction
-Cloud deployment (Docker, AWS/GCP)
-Advanced analytics dashboard
-👥 Team
-Shyaam Sundar M
-Srivignesh R
-Sushmidha S
-Swetha V
-Venkata Navadeep Reddy
-Yaazhini A
-📌 Conclusion
+</pre>
 
-PlacementLink provides a centralized, scalable, and efficient solution for managing placement activities. It enhances transparency, improves communication, and enables data-driven decision-making to boost placement success rates.
+<hr>
+
+<h2>📈 Future Enhancements</h2>
+
+<ul>
+<li>JWT-based authentication</li>
+<li>REST API integration</li>
+<li>AI-based job recommendation system</li>
+<li>Resume parsing and skill extraction</li>
+<li>Cloud deployment (Docker, AWS/GCP)</li>
+<li>Advanced analytics dashboard</li>
+</ul>
+
+<hr>
+
+<h2>👥 Team</h2>
+
+<ul>
+<li>Shyaam Sundar M</li>
+<li>Srivignesh R</li>
+<li>Sushmidha S</li>
+<li>Swetha V</li>
+<li>Venkata Navadeep Reddy</li>
+<li>Yaazhini A</li>
+</ul>
+
+<hr>
+
+<h2>📌 Conclusion</h2>
+
+<p>
+PlacementLink provides a <b>centralized, scalable, and efficient solution</b> for managing placement activities. 
+It enhances transparency, improves communication, and enables <b>data-driven decision-making</b> to boost placement success rates.
+</p>
