@@ -6,12 +6,31 @@ from models.utility_model import create_notification, add_training_resource, get
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
+def get_upcoming_drive_calendar():
+    return [
+        {
+            "company": "Google",
+            "date": "2026-04-08",
+            "day": "Wed",
+            "location": "Main Auditorium",
+            "event": "Pre-placement talk and online assessment",
+        },
+        {
+            "company": "Goldman Sachs",
+            "date": "2026-04-15",
+            "day": "Wed",
+            "location": "Seminar Hall A",
+            "event": "Aptitude test and technical screening",
+        },
+    ]
+
 @admin_bp.route('/dashboard')
 @role_required('admin')
 def dashboard():
     stats = get_placement_stats()
     recent_placements = get_recent_placements()
-    return render_template('admin/dashboard.html', stats=stats, recent_placements=recent_placements, dept_data_json=json.dumps(stats['dept_data']), company_data_json=json.dumps(stats['company_data']))
+    upcoming_drives = get_upcoming_drive_calendar()
+    return render_template('admin/dashboard.html', stats=stats, recent_placements=recent_placements, upcoming_drives=upcoming_drives, dept_data_json=json.dumps(stats['dept_data']), company_data_json=json.dumps(stats['company_data']))
 
 @admin_bp.route('/companies', methods=['GET', 'POST'])
 @role_required('admin')

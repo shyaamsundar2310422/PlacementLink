@@ -4,10 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Placement Management</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='rocket-favicon.svg') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="auth-page">
+    <div class="interactive-bg" aria-hidden="true">
+        <canvas id="bgMeshCanvas" class="interactive-bg-canvas"></canvas>
+    </div>
     <div class="auth-container">
         <div class="auth-card">
             <h2 class="auth-title">Welcome Back</h2>
@@ -37,5 +42,6 @@
             <p class="auth-link">Are you a student? <a href="/auth/register">Create an account</a></p>
         </div>
     </div>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

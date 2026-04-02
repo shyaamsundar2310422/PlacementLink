@@ -10,6 +10,24 @@ from models.utility_model import get_notifications_for_student, upload_document,
 
 student_bp = Blueprint('student', __name__, url_prefix='/student')
 
+def get_upcoming_drive_calendar():
+    return [
+        {
+            "company": "Google",
+            "date": "2026-04-08",
+            "day": "Wed",
+            "location": "Main Auditorium",
+            "event": "Pre-placement talk and online assessment",
+        },
+        {
+            "company": "Goldman Sachs",
+            "date": "2026-04-15",
+            "day": "Wed",
+            "location": "Seminar Hall A",
+            "event": "Aptitude test and technical screening",
+        },
+    ]
+
 @student_bp.route('/dashboard')
 @role_required('student')
 def dashboard():
@@ -23,7 +41,8 @@ def dashboard():
     backlogs = int(profile['backlog_count']) if profile and profile['backlog_count'] else 0
     eligible_jobs = get_eligible_jobs(cgpa, backlogs, student['department'])
     notifications = get_notifications_for_student(student['department'])[:5]
-    return render_template('student/dashboard.html', student=student, profile=profile, open_opportunity_count=len(eligible_jobs), notifications=notifications)
+    upcoming_drives = get_upcoming_drive_calendar()
+    return render_template('student/dashboard.html', student=student, profile=profile, open_opportunity_count=len(eligible_jobs), notifications=notifications, upcoming_drives=upcoming_drives)
 
 @student_bp.route('/profile', methods=['GET', 'POST'])
 @role_required('student')

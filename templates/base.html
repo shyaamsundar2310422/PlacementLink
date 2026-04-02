@@ -5,34 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}PlacementLink{% endblock %}</title>
     <!-- Google Fonts -->
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='rocket-favicon.svg') }}">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
+    <div class="interactive-bg" aria-hidden="true">
+        <canvas id="bgMeshCanvas" class="interactive-bg-canvas"></canvas>
+    </div>
     <nav class="navbar glassmorphism">
         <div class="nav-brand">
             <i class="fas fa-rocket"></i> PlacementLink
         </div>
         <div class="nav-links">
+            <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch color theme" title="Switch color theme">
+                <i class="fas fa-moon theme-icon-dark"></i>
+                <i class="fas fa-sun theme-icon-light"></i>
+                <span class="theme-toggle-label">Theme</span>
+            </button>
             {% if session.get('user_id') %}
                 {% if session.get('role') == 'student' %}
-                    <a href="/student/dashboard" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
-                    <a href="/student/jobs" class="nav-link"><i class="fas fa-briefcase"></i> Opportunities</a>
-                    <a href="/student/applications" class="nav-link"><i class="fas fa-file-alt"></i> Applications</a>
-                    <a href="/student/resources" class="nav-link"><i class="fas fa-book"></i> Resources</a>
-                    <a href="/student/feedback" class="nav-link"><i class="fas fa-comment"></i> Feedback</a>
-                    <a href="/student/profile" class="nav-link"><i class="fas fa-user"></i> My Profile</a>
+                    <a href="/student/dashboard" class="nav-link {% if request.path == '/student/dashboard' %}active{% endif %}"><i class="fas fa-home"></i> Dashboard</a>
+                    <a href="/student/jobs" class="nav-link {% if request.path.startswith('/student/jobs') %}active{% endif %}"><i class="fas fa-briefcase"></i> Opportunities</a>
+                    <a href="/student/applications" class="nav-link {% if request.path.startswith('/student/applications') %}active{% endif %}"><i class="fas fa-file-alt"></i> Applications</a>
+                    <a href="/student/resources" class="nav-link {% if request.path.startswith('/student/resources') %}active{% endif %}"><i class="fas fa-book"></i> Resources</a>
+                    <a href="/student/feedback" class="nav-link {% if request.path.startswith('/student/feedback') %}active{% endif %}"><i class="fas fa-comment"></i> Feedback</a>
+                    <a href="/student/profile" class="nav-link {% if request.path.startswith('/student/profile') %}active{% endif %}"><i class="fas fa-user"></i> My Profile</a>
                 {% elif session.get('role') == 'mentor' %}
-                    <a href="/mentor/dashboard" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
-                    <a href="/mentor/students" class="nav-link"><i class="fas fa-users"></i> Students</a>
-                    <a href="/mentor/requests" class="nav-link"><i class="fas fa-envelope-open-text"></i> Requests</a>
+                    <a href="/mentor/dashboard" class="nav-link {% if request.path == '/mentor/dashboard' %}active{% endif %}"><i class="fas fa-home"></i> Dashboard</a>
+                    <a href="/mentor/students" class="nav-link {% if request.path.startswith('/mentor/students') %}active{% endif %}"><i class="fas fa-users"></i> Students</a>
+                    <a href="/mentor/requests" class="nav-link {% if request.path.startswith('/mentor/requests') %}active{% endif %}"><i class="fas fa-envelope-open-text"></i> Requests</a>
                 {% elif session.get('role') == 'admin' %}
-                    <a href="/admin/dashboard" class="nav-link"><i class="fas fa-chart-line"></i> Analytics</a>
-                    <a href="/admin/companies" class="nav-link"><i class="fas fa-building"></i> Companies</a>
-                    <a href="/admin/jobs" class="nav-link"><i class="fas fa-briefcase"></i> Post Jobs</a>
-                    <a href="/admin/utilities" class="nav-link"><i class="fas fa-tools"></i> Utilities</a>
+                    <a href="/admin/dashboard" class="nav-link {% if request.path == '/admin/dashboard' %}active{% endif %}"><i class="fas fa-chart-line"></i> Analytics</a>
+                    <a href="/admin/companies" class="nav-link {% if request.path.startswith('/admin/companies') %}active{% endif %}"><i class="fas fa-building"></i> Companies</a>
+                    <a href="/admin/jobs" class="nav-link {% if request.path.startswith('/admin/jobs') %}active{% endif %}"><i class="fas fa-briefcase"></i> Post Jobs</a>
+                    <a href="/admin/utilities" class="nav-link {% if request.path.startswith('/admin/utilities') %}active{% endif %}"><i class="fas fa-tools"></i> Utilities</a>
                 {% endif %}
                 <span class="user-badge"><i class="fas fa-user-circle"></i> {{ session.get('username') }}</span>
                 <a href="/auth/logout" class="nav-btn btn-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
