@@ -89,7 +89,7 @@ def update_application_status_route(app_id):
     elif result.get("email_configured"):
         flash("Application status updated, but the email could not be sent.", "warning")
     else:
-        flash("Application status updated. Email was not sent because SMTP is not configured yet.", "warning")
+        flash("Application status updated successfully.", "success")
     return redirect(f'/admin/job/{job_id}/applications')
 
 @admin_bp.route('/utilities', methods=['GET', 'POST'])
