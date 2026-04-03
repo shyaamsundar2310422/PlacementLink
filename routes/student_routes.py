@@ -5,7 +5,7 @@ from config import Config
 from utils.decorators import role_required
 from models.user_model import get_student_by_user_id
 from models.profile_model import get_student_profile, create_update_request
-from models.job_model import get_jobs_matching_profile, get_student_applications, apply_job
+from models.job_model import get_jobs_matching_profile, get_all_active_jobs_with_match, get_student_applications, apply_job
 from models.utility_model import get_notifications_for_student, upload_document, get_student_documents, get_all_training_resources, submit_feedback
 
 student_bp = Blueprint('student', __name__, url_prefix='/student')
@@ -88,6 +88,16 @@ def jobs():
     applied_job_ids = [app['job_id'] for app in applications] if applications else []
 
     return render_template('student/jobs.html', jobs=jobs_list, applied_job_ids=applied_job_ids, profile_ready=profile_ready)
+
+
+@student_bp.route('/all-jobs')
+@role_required('student')
+def all_jobs():
+    student = get_student_by_user_id(session['user_id'])
+    jobs_list = get_all_active_jobs_with_match(student['id'])
+    applications = get_student_applications(student['id'])
+    applied_job_ids = [app['job_id'] for app in applications] if applications else []
+    return render_template('student/all_jobs.html', jobs=jobs_list, applied_job_ids=applied_job_ids)
 
 @student_bp.route('/jobs/apply/<int:job_id>', methods=['POST'])
 @role_required('student')

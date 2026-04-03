@@ -6,3 +6,13 @@ __pycache__/
 *.pyc
 *.log
 *.txt
+
+# Local database/runtime artifacts
+.localdb/
+*.pid
+*.sock
+*.err
+
+# OS/editor metadata
+.DS_Store
+.vscode/

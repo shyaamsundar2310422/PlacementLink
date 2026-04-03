@@ -114,6 +114,56 @@ def get_jobs_matching_profile(student_id):
     finally:
         connection.close()
 
+
+def get_all_active_jobs_with_match(student_id):
+    connection = get_db_connection()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT s.department, sp.skills, sp.projects, sp.certifications
+                FROM students s
+                LEFT JOIN student_profiles sp ON sp.student_id = s.id
+                WHERE s.id = %s
+                """,
+                (student_id,),
+            )
+            student_profile = cursor.fetchone()
+
+            cursor.execute(
+                """
+                SELECT j.*, c.name as company_name, c.website_url
+                FROM jobs j
+                JOIN companies c ON j.company_id = c.id
+                WHERE j.application_deadline >= CURDATE()
+                ORDER BY j.created_at DESC
+                """
+            )
+            jobs = cursor.fetchall()
+
+        profile_text = ""
+        profile_tokens = set()
+        if student_profile:
+            profile_text = " ".join([
+                student_profile.get("department") or "",
+                student_profile.get("skills") or "",
+                student_profile.get("projects") or "",
+                student_profile.get("certifications") or "",
+            ]).strip()
+            normalized = _normalize_text(profile_text)
+            profile_tokens = set(_tokenize(normalized)) if normalized else set()
+            profile_text = normalized
+
+        for job in jobs:
+            matched, score = _is_profile_jd_match(profile_text, profile_tokens, job)
+            job["is_match"] = matched
+            job["match_score"] = score
+
+        jobs.sort(key=lambda item: item.get("match_score", 0), reverse=True)
+        return jobs
+    finally:
+        connection.close()
+
 def create_company(name, website_url, profile, past_history):
     connection = get_db_connection()
     try:
