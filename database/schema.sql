@@ -60,6 +60,8 @@ CREATE TABLE profile_update_requests (
     mentor_id INT NOT NULL,
     requested_changes TEXT NOT NULL,
     status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+    rejection_reason TEXT,
+    reviewed_at TIMESTAMP NULL,
     request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
     FOREIGN KEY (mentor_id) REFERENCES mentors(id) ON DELETE CASCADE

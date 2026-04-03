@@ -32,6 +32,34 @@
         });
     }
 
+    const reviewToggle = document.getElementById("studentReviewBell");
+    const reviewDropdown = document.getElementById("studentReviewDropdown");
+
+    if (reviewToggle && reviewDropdown) {
+        function closeReviewDropdown() {
+            reviewDropdown.hidden = true;
+            reviewToggle.setAttribute("aria-expanded", "false");
+        }
+
+        reviewToggle.addEventListener("click", function () {
+            const nextHidden = !reviewDropdown.hidden;
+            reviewDropdown.hidden = nextHidden;
+            reviewToggle.setAttribute("aria-expanded", nextHidden ? "false" : "true");
+        });
+
+        document.addEventListener("click", function (event) {
+            if (!reviewDropdown.hidden && !reviewToggle.contains(event.target) && !reviewDropdown.contains(event.target)) {
+                closeReviewDropdown();
+            }
+        });
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") {
+                closeReviewDropdown();
+            }
+        });
+    }
+
     if (canvas) {
         const context = canvas.getContext("2d");
         const motionReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;

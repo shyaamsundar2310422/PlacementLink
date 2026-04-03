@@ -6,6 +6,22 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from database.db import get_db_connection
 
+
+def ensure_profile_request_review_columns():
+    connection = get_db_connection()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SHOW COLUMNS FROM profile_update_requests LIKE 'rejection_reason'")
+            if not cursor.fetchone():
+                cursor.execute("ALTER TABLE profile_update_requests ADD COLUMN rejection_reason TEXT NULL")
+
+            cursor.execute("SHOW COLUMNS FROM profile_update_requests LIKE 'reviewed_at'")
+            if not cursor.fetchone():
+                cursor.execute("ALTER TABLE profile_update_requests ADD COLUMN reviewed_at TIMESTAMP NULL")
+        connection.commit()
+    finally:
+        connection.close()
+
 def get_student_profile(student_id):
     connection = get_db_connection()
     try:
@@ -57,12 +73,41 @@ def get_request(request_id):
     finally:
         connection.close()
 
-def update_request_status(request_id, status):
+def update_request_status(request_id, status, rejection_reason=None):
     connection = get_db_connection()
     try:
         with connection.cursor() as cursor:
-            cursor.execute("UPDATE profile_update_requests SET status = %s WHERE id = %s", (status, request_id))
+            cursor.execute(
+                """
+                UPDATE profile_update_requests
+                SET status = %s,
+                    rejection_reason = %s,
+                    reviewed_at = CURRENT_TIMESTAMP
+                WHERE id = %s
+                """,
+                (status, rejection_reason, request_id),
+            )
         connection.commit()
+    finally:
+        connection.close()
+
+
+def get_student_profile_review_notifications(student_id, limit=10):
+    connection = get_db_connection()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT id, status, rejection_reason, reviewed_at
+                FROM profile_update_requests
+                WHERE student_id = %s
+                  AND status IN ('approved', 'rejected')
+                ORDER BY COALESCE(reviewed_at, request_date) DESC
+                LIMIT %s
+                """,
+                (student_id, limit),
+            )
+            return cursor.fetchall()
     finally:
         connection.close()
 

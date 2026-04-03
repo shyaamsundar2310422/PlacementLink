@@ -53,21 +53,35 @@ def requests_view():
             
     return render_template('mentor/requests.html', requests=requests)
 
-@mentor_bp.route('/request/<int:req_id>/<action>')
+@mentor_bp.route('/request/<int:req_id>', methods=['POST'])
 @role_required('mentor')
-def handle_request(req_id, action):
+def handle_request(req_id):
+    mentor = get_mentor_by_user_id(session['user_id'])
+    if not mentor:
+        flash("Mentor record not found.", "danger")
+        return redirect('/auth/login')
+
     req = get_request(req_id)
     if not req:
         flash("Request not found.", "danger")
         return redirect('/mentor/requests')
+
+    if req['mentor_id'] != mentor['id']:
+        flash("Unauthorized request action.", "danger")
+        return redirect('/mentor/requests')
+
+    action = request.form.get('action')
+    rejection_reason = (request.form.get('rejection_reason') or '').strip()
         
     if action == 'approve':
         changes = json.loads(req['requested_changes'])
         apply_profile_update(req['student_id'], changes)
-        update_request_status(req_id, 'approved')
+        update_request_status(req_id, 'approved', None)
         flash("Profile update approved and applied successfully.", "success")
     elif action == 'reject':
-        update_request_status(req_id, 'rejected')
+        update_request_status(req_id, 'rejected', rejection_reason if rejection_reason else None)
         flash("Profile update request rejected.", "warning")
+    else:
+        flash("Invalid action.", "danger")
         
     return redirect('/mentor/requests')
