@@ -1,10 +1,118 @@
 import pymysql
 import sys
 import os
+import re
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from database.db import get_db_connection
 from utils.email_utils import send_application_status_email
+
+_STOPWORDS = {
+    "and", "or", "the", "a", "an", "to", "for", "of", "in", "on", "with", "by",
+    "is", "are", "as", "at", "from", "be", "strong", "good", "skills", "skill",
+    "knowledge", "understanding", "experience", "ability", "basic", "advanced"
+}
+
+
+def _normalize_text(value):
+    text = (value or "").lower()
+    text = re.sub(r"[^a-z0-9\s]", " ", text)
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def _tokenize(value):
+    normalized = _normalize_text(value)
+    return [token for token in normalized.split() if len(token) > 1 and token not in _STOPWORDS]
+
+
+def _extract_required_skill_phrases(required_skills):
+    if not required_skills:
+        return []
+    chunks = [chunk.strip() for chunk in re.split(r"[,;/]", required_skills) if chunk.strip()]
+    return [_normalize_text(chunk) for chunk in chunks if _normalize_text(chunk)]
+
+
+def _is_profile_jd_match(profile_text_normalized, profile_tokens, job):
+    required_skill_phrases = _extract_required_skill_phrases(job.get("required_skills"))
+    required_skill_tokens = set(_tokenize(" ".join(required_skill_phrases)))
+    if not required_skill_tokens:
+        return False, 0
+
+    matched_required_tokens = len(required_skill_tokens.intersection(profile_tokens))
+    skill_coverage = matched_required_tokens / len(required_skill_tokens)
+    if skill_coverage < 0.45:
+        return False, 0
+
+    jd_text = " ".join([
+        job.get("required_skills") or "",
+        job.get("eligibility_criteria") or "",
+        job.get("title") or "",
+        job.get("role") or "",
+    ])
+    jd_tokens = set(_tokenize(jd_text))
+    if not jd_tokens:
+        return False, 0
+
+    coverage = len(jd_tokens.intersection(profile_tokens)) / len(jd_tokens)
+    strict_match = coverage >= 0.25
+    return strict_match, round(((coverage + skill_coverage) / 2) * 100)
+
+
+def get_jobs_matching_profile(student_id):
+    connection = get_db_connection()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT s.department, sp.skills, sp.projects, sp.certifications
+                FROM students s
+                LEFT JOIN student_profiles sp ON sp.student_id = s.id
+                WHERE s.id = %s
+                """,
+                (student_id,),
+            )
+            student_profile = cursor.fetchone()
+
+            if not student_profile:
+                return []
+
+            profile_text = " ".join([
+                student_profile.get("department") or "",
+                student_profile.get("skills") or "",
+                student_profile.get("projects") or "",
+                student_profile.get("certifications") or "",
+            ]).strip()
+
+            profile_text_normalized = _normalize_text(profile_text)
+            if not profile_text_normalized:
+                return []
+
+            profile_tokens = set(_tokenize(profile_text_normalized))
+            if not profile_tokens:
+                return []
+
+            cursor.execute(
+                """
+                SELECT j.*, c.name as company_name, c.website_url
+                FROM jobs j
+                JOIN companies c ON j.company_id = c.id
+                WHERE j.application_deadline >= CURDATE()
+                ORDER BY j.created_at DESC
+                """
+            )
+            jobs = cursor.fetchall()
+
+        matched_jobs = []
+        for job in jobs:
+            matched, score = _is_profile_jd_match(profile_text_normalized, profile_tokens, job)
+            if matched:
+                job["match_score"] = score
+                matched_jobs.append(job)
+
+        matched_jobs.sort(key=lambda item: item.get("match_score", 0), reverse=True)
+        return matched_jobs
+    finally:
+        connection.close()
 
 def create_company(name, website_url, profile, past_history):
     connection = get_db_connection()
@@ -93,6 +201,11 @@ def apply_job(student_id, job_id):
     connection = get_db_connection()
     try:
         with connection.cursor() as cursor:
+            matched_jobs = get_jobs_matching_profile(student_id)
+            matched_job_ids = {job["id"] for job in matched_jobs}
+            if job_id not in matched_job_ids:
+                return False, "Your profile does not strictly match this job description."
+
             cursor.execute("SELECT id FROM applications WHERE student_id = %s AND job_id = %s", (student_id, job_id))
             if cursor.fetchone():
                 return False, "Already applied to this job."

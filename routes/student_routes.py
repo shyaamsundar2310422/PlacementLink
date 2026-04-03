@@ -5,7 +5,7 @@ from config import Config
 from utils.decorators import role_required
 from models.user_model import get_student_by_user_id
 from models.profile_model import get_student_profile, create_update_request
-from models.job_model import get_active_jobs, get_eligible_jobs, get_student_applications, apply_job
+from models.job_model import get_jobs_matching_profile, get_student_applications, apply_job
 from models.utility_model import get_notifications_for_student, upload_document, get_student_documents, get_all_training_resources, submit_feedback
 
 student_bp = Blueprint('student', __name__, url_prefix='/student')
@@ -37,12 +37,10 @@ def dashboard():
         return redirect('/auth/login')
     
     profile = get_student_profile(student['id'])
-    cgpa = float(profile['cgpa']) if profile and profile['cgpa'] else 0.0
-    backlogs = int(profile['backlog_count']) if profile and profile['backlog_count'] else 0
-    eligible_jobs = get_eligible_jobs(cgpa, backlogs, student['department'])
+    matched_jobs = get_jobs_matching_profile(student['id'])
     notifications = get_notifications_for_student(student['department'])[:5]
     upcoming_drives = get_upcoming_drive_calendar()
-    return render_template('student/dashboard.html', student=student, profile=profile, open_opportunity_count=len(eligible_jobs), notifications=notifications, upcoming_drives=upcoming_drives)
+    return render_template('student/dashboard.html', student=student, profile=profile, open_opportunity_count=len(matched_jobs), notifications=notifications, upcoming_drives=upcoming_drives)
 
 @student_bp.route('/profile', methods=['GET', 'POST'])
 @role_required('student')
@@ -75,21 +73,21 @@ def profile():
 def jobs():
     student = get_student_by_user_id(session['user_id'])
     profile = get_student_profile(student['id'])
-    
-    cgpa = float(profile['cgpa']) if profile and profile['cgpa'] else 0.0
-    backlogs = int(profile['backlog_count']) if profile and profile['backlog_count'] else 0
-    dept = student['department']
-    browse_only = cgpa <= 0
 
-    if browse_only:
-        jobs_list = get_active_jobs()
-    else:
-        jobs_list = get_eligible_jobs(cgpa, backlogs, dept)
+    profile_ready = bool(
+        profile and any([
+            profile.get('skills'),
+            profile.get('projects'),
+            profile.get('certifications'),
+        ])
+    )
+
+    jobs_list = get_jobs_matching_profile(student['id']) if profile_ready else []
     
     applications = get_student_applications(student['id'])
     applied_job_ids = [app['job_id'] for app in applications] if applications else []
 
-    return render_template('student/jobs.html', jobs=jobs_list, applied_job_ids=applied_job_ids, browse_only=browse_only)
+    return render_template('student/jobs.html', jobs=jobs_list, applied_job_ids=applied_job_ids, profile_ready=profile_ready)
 
 @student_bp.route('/jobs/apply/<int:job_id>', methods=['POST'])
 @role_required('student')

@@ -3,14 +3,14 @@
 
 {% block content %}
 <div class="dashboard-header" style="margin-bottom: 2rem;">
-    <h2><i class="fas fa-briefcase text-gradient"></i> Eligible Job Opportunities</h2>
-    <p class="text-muted">Jobs tailored for you based on your current CGPA, backlogs, and department.</p>
+    <h2><i class="fas fa-briefcase text-gradient"></i> Matched Job Opportunities</h2>
+    <p class="text-muted">Jobs are suggested only when your profile strictly matches the job description.</p>
 </div>
 
-{% if browse_only %}
+{% if not profile_ready %}
 <div class="card" style="margin-bottom: 1.5rem; border-left: 4px solid var(--warning);">
-    <h3 style="margin-bottom: 0.5rem;"><i class="fas fa-user-edit text-warning"></i> Complete Your Profile To Check Eligibility</h3>
-    <p class="text-muted">You can browse active company openings now. Update your CGPA and profile details to unlock eligibility-based applications automatically. Your account has also been assigned to a mentor.</p>
+    <h3 style="margin-bottom: 0.5rem;"><i class="fas fa-user-edit text-warning"></i> Add Profile Details To Get Matches</h3>
+    <p class="text-muted">Add your skills, projects, and certifications in your profile. Job suggestions and applications are allowed only when your profile strictly matches the job description.</p>
 </div>
 {% endif %}
 
@@ -32,6 +32,9 @@
             </p>
             <h3 style="margin: 0.2rem 0; font-size: 1.4rem;">{{ job.title }}</h3>
             <p class="text-muted" style="font-size: 1rem;">{{ job.role }}</p>
+            {% if job.match_score is defined %}
+            <p style="margin-top: 0.6rem;"><span class="badge" style="background: var(--surface-light); color: var(--text-main);">Profile Match: {{ job.match_score }}%</span></p>
+            {% endif %}
         </div>
         
         <div style="background: var(--surface-light); padding: 1.2rem; border-radius: 8px; margin-bottom: 1.5rem; flex-grow: 1;">
@@ -56,8 +59,8 @@
         <div>
             {% if job.id in applied_job_ids %}
                 <button class="btn btn-block" disabled style="background: var(--surface-light); color: var(--text-muted); cursor: not-allowed; opacity: 0.8;">Already Applied</button>
-            {% elif browse_only %}
-                <a href="/student/profile" class="btn btn-block" style="background: var(--surface-light); color: var(--text-main);">Complete profile to apply</a>
+            {% elif not profile_ready %}
+                <a href="/student/profile" class="btn btn-block" style="background: var(--surface-light); color: var(--text-main);">Update profile to unlock matching</a>
             {% else %}
                 <form action="/student/jobs/apply/{{ job.id }}" method="POST">
                     <button type="submit" class="btn btn-primary btn-block">Apply for this role <i class="fas fa-arrow-right"></i></button>
@@ -69,7 +72,7 @@
     <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem;">
         <i class="fas fa-search" style="font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem;"></i>
         <h3>No jobs currently match your profile</h3>
-        <p class="text-muted" style="margin-top: 0.5rem;">Ensure your profile information (CGPA, etc.) is fully up to date and approved by your mentor.</p>
+        <p class="text-muted" style="margin-top: 0.5rem;">Keep your skills, projects, and certifications updated to improve strict profile-to-JD matching.</p>
     </div>
     {% endfor %}
 </div>
