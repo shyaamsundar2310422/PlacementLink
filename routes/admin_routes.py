@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, flash, session
 import json
 from utils.decorators import role_required
-from models.job_model import create_company, get_all_companies, create_job, get_all_jobs, get_placement_stats, get_recent_placements, get_applications_by_job, get_job_by_id, update_application_stage
+from models.job_model import create_company, get_all_companies, create_job, get_all_jobs, get_placement_stats, get_recent_placements, get_placement_filter_options, get_applications_by_job, get_job_by_id, update_application_stage
 from models.utility_model import create_notification, add_training_resource, get_all_notifications, get_all_training_resources, get_all_feedback
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
@@ -27,10 +27,28 @@ def get_upcoming_drive_calendar():
 @admin_bp.route('/dashboard')
 @role_required('admin')
 def dashboard():
-    stats = get_placement_stats()
-    recent_placements = get_recent_placements()
+    selected_year = request.args.get('year', '').strip()
+    selected_department = request.args.get('department', '').strip()
+
+    selected_year = selected_year if selected_year.isdigit() else ''
+    selected_department = selected_department or ''
+
+    stats = get_placement_stats(year=selected_year or None, department=selected_department or None)
+    recent_placements = get_recent_placements(year=selected_year or None, department=selected_department or None)
+    filter_options = get_placement_filter_options()
     upcoming_drives = get_upcoming_drive_calendar()
-    return render_template('admin/dashboard.html', stats=stats, recent_placements=recent_placements, upcoming_drives=upcoming_drives, dept_data_json=json.dumps(stats['dept_data']), company_data_json=json.dumps(stats['company_data']))
+    return render_template(
+        'admin/dashboard.html',
+        stats=stats,
+        recent_placements=recent_placements,
+        upcoming_drives=upcoming_drives,
+        dept_data_json=json.dumps(stats['dept_data']),
+        company_data_json=json.dumps(stats['company_data']),
+        available_years=filter_options['years'],
+        available_departments=filter_options['departments'],
+        selected_year=selected_year,
+        selected_department=selected_department,
+    )
 
 @admin_bp.route('/companies', methods=['GET', 'POST'])
 @role_required('admin')
@@ -83,6 +101,8 @@ def job_applications(job_id):
 def update_application_status_route(app_id):
     new_stage = request.form.get('new_stage')
     job_id = request.form.get('job_id')
+    if new_stage == 'Placed':
+        new_stage = 'Selected'
     result = update_application_stage(app_id, new_stage)
     if result.get("email_sent"):
         flash("Application status updated and email sent to the student.", "success")

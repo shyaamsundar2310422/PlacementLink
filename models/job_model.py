@@ -384,23 +384,35 @@ def get_job_by_id(job_id):
     finally:
         connection.close()
 
-def get_placement_stats():
+def get_placement_stats(year=None, department=None):
     connection = get_db_connection()
     try:
         with connection.cursor() as cursor:
-            sql = """
-            SELECT a.student_id, j.ctc, st.department, c.name as company_name 
+            filters = ["ast.stage = 'Selected'"]
+            params = []
+            if year:
+                filters.append("YEAR(ast.updated_at) = %s")
+                params.append(int(year))
+            if department:
+                filters.append("st.department = %s")
+                params.append(department)
+
+            sql = f"""
+            SELECT a.student_id, j.ctc, st.department, c.name as company_name
             FROM applications a
             JOIN jobs j ON a.job_id = j.id
             JOIN companies c ON j.company_id = c.id
             JOIN students st ON a.student_id = st.id
             JOIN application_status ast ON ast.application_id = a.id
-            WHERE ast.stage = 'Selected'
+            WHERE {' AND '.join(filters)}
             """
-            cursor.execute(sql)
+            cursor.execute(sql, tuple(params))
             placements = cursor.fetchall()
-            
-            cursor.execute("SELECT count(*) as total FROM students")
+
+            if department:
+                cursor.execute("SELECT count(*) as total FROM students WHERE department = %s", (department,))
+            else:
+                cursor.execute("SELECT count(*) as total FROM students")
             total_students_row = cursor.fetchone()
             total_students = total_students_row['total'] if total_students_row and total_students_row['total'] > 0 else 1
             
@@ -435,16 +447,25 @@ def get_placement_stats():
                     
             if valid_ctc_count > 0:
                 stats['average_ctc'] = round(total_ctc / valid_ctc_count, 2)
-                
+
             return stats
     finally:
         connection.close()
 
-def get_recent_placements(limit=8):
+def get_recent_placements(limit=8, year=None, department=None):
     connection = get_db_connection()
     try:
         with connection.cursor() as cursor:
-            sql = """
+            filters = ["ast.stage = 'Selected'"]
+            params = []
+            if year:
+                filters.append("YEAR(ast.updated_at) = %s")
+                params.append(int(year))
+            if department:
+                filters.append("st.department = %s")
+                params.append(department)
+
+            sql = f"""
             SELECT st.first_name, st.last_name, st.register_number, st.department,
                    c.name AS company_name, j.title, j.location, j.ctc, ast.updated_at
             FROM applications a
@@ -452,11 +473,46 @@ def get_recent_placements(limit=8):
             JOIN jobs j ON a.job_id = j.id
             JOIN companies c ON j.company_id = c.id
             JOIN application_status ast ON ast.application_id = a.id
-            WHERE ast.stage = 'Selected'
+            WHERE {' AND '.join(filters)}
             ORDER BY ast.updated_at DESC
             LIMIT %s
             """
-            cursor.execute(sql, (limit,))
+            params.append(limit)
+            cursor.execute(sql, tuple(params))
             return cursor.fetchall()
+    finally:
+        connection.close()
+
+
+def get_placement_filter_options():
+    connection = get_db_connection()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT DISTINCT YEAR(ast.updated_at) AS placement_year
+                FROM application_status ast
+                WHERE ast.stage = 'Selected'
+                ORDER BY placement_year DESC
+                """
+            )
+            year_rows = cursor.fetchall()
+            years = [row['placement_year'] for row in year_rows if row.get('placement_year')]
+
+            cursor.execute(
+                """
+                SELECT DISTINCT department
+                FROM students
+                WHERE department IS NOT NULL AND department <> ''
+                ORDER BY department ASC
+                """
+            )
+            dept_rows = cursor.fetchall()
+            departments = [row['department'] for row in dept_rows]
+
+            return {
+                'years': years,
+                'departments': departments,
+            }
     finally:
         connection.close()

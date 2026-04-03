@@ -7,6 +7,33 @@
     <p class="text-muted">Overview of placement performance and statistics.</p>
 </div>
 
+<div class="card" style="margin-bottom: 1.5rem;">
+    <form method="GET" action="/admin/dashboard" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; align-items: end;">
+        <div>
+            <label for="year" class="text-muted" style="display: block; margin-bottom: 0.4rem;">Year-wise Data</label>
+            <select id="year" name="year" class="form-control">
+                <option value="">All Years</option>
+                {% for year in available_years %}
+                <option value="{{ year }}" {% if selected_year == year|string %}selected{% endif %}>{{ year }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="department" class="text-muted" style="display: block; margin-bottom: 0.4rem;">Department-wise Data</label>
+            <select id="department" name="department" class="form-control">
+                <option value="">All Departments</option>
+                {% for department in available_departments %}
+                <option value="{{ department }}" {% if selected_department == department %}selected{% endif %}>{{ department }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div style="display: flex; gap: 0.6rem; align-items: center;">
+            <button type="submit" class="btn"><i class="fas fa-filter"></i> Apply Filters</button>
+            <a href="/admin/dashboard" class="btn" style="background: var(--surface-light); color: var(--text-main);"><i class="fas fa-undo"></i> Reset</a>
+        </div>
+    </form>
+</div>
+
 <div class="dashboard-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
     <div class="card stat-card" style="border-top: 4px solid var(--primary);">
         <h3 class="text-muted"><i class="fas fa-chart-line"></i> Placement %</h3>

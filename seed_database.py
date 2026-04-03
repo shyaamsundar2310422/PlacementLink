@@ -53,6 +53,8 @@ def seed_db():
                 ("Nisha", "Reddy", "nisha.reddy", "nisha@college.edu", "student123", "IT008", "Information Technology", 8.0, 0, "SQL, Python, Statistics, Power BI, Excel", "Sales dashboard, student predictor", "Microsoft Power BI Data Analyst", "9876500018"),
             ]
 
+            student_ids = {}
+
             for first_name, last_name, username, email, password, register_number, department, cgpa, backlog_count, skills, projects, certifications, contact_number in students:
                 cursor.execute("SELECT id FROM users WHERE email = %s", (email,))
                 user_row = cursor.fetchone()
@@ -89,6 +91,8 @@ def seed_db():
                         (user_id, register_number, first_name, last_name, department, mentor_id),
                     )
                     student_id = cursor.lastrowid
+
+                student_ids[register_number] = student_id
 
                 cursor.execute("SELECT id FROM student_profiles WHERE student_id = %s", (student_id,))
                 profile_row = cursor.fetchone()
@@ -274,6 +278,13 @@ def seed_db():
                             job["role"],
                         ),
                     )
+                    cursor.execute(
+                        "SELECT id FROM jobs WHERE company_id = %s AND title = %s AND role = %s",
+                        (company_id, job["title"], job["role"]),
+                    )
+                    existing_job = cursor.fetchone()
+                    if existing_job:
+                        job["id"] = existing_job[0]
                     continue
 
                 cursor.execute(
@@ -299,6 +310,49 @@ def seed_db():
                     ),
                 )
                 print(f"Job created: {job['company']} - {job['title']}")
+                job["id"] = cursor.lastrowid
+
+            # Seed a few placed outcomes so admin dashboards and reports have demo data.
+            job_lookup = {(job["company"], job["title"], job["role"]): job.get("id") for job in job_postings}
+            fake_placements = [
+                ("CSE001", "Google", "Software Engineer", "Backend Developer"),
+                ("CSE007", "Amazon", "SDE I", "Software Development Engineer"),
+                ("IT002", "Adobe", "Frontend Engineer", "UI Developer"),
+                ("IT008", "JPMorgan Chase", "Software Engineer Program", "Application Developer"),
+            ]
+
+            for register_number, company, title, role in fake_placements:
+                student_id = student_ids.get(register_number)
+                job_id = job_lookup.get((company, title, role))
+                if not student_id or not job_id:
+                    continue
+
+                cursor.execute(
+                    "SELECT id FROM applications WHERE student_id = %s AND job_id = %s",
+                    (student_id, job_id),
+                )
+                app_row = cursor.fetchone()
+                if app_row:
+                    application_id = app_row[0]
+                else:
+                    cursor.execute(
+                        "INSERT INTO applications (student_id, job_id) VALUES (%s, %s)",
+                        (student_id, job_id),
+                    )
+                    application_id = cursor.lastrowid
+
+                cursor.execute("SELECT id FROM application_status WHERE application_id = %s", (application_id,))
+                status_row = cursor.fetchone()
+                if status_row:
+                    cursor.execute(
+                        "UPDATE application_status SET stage = 'Selected', updated_at = CURRENT_TIMESTAMP WHERE application_id = %s",
+                        (application_id,),
+                    )
+                else:
+                    cursor.execute(
+                        "INSERT INTO application_status (application_id, stage) VALUES (%s, 'Selected')",
+                        (application_id,),
+                    )
 
         connection.commit()
     finally:
