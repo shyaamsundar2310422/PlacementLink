@@ -1,7 +1,11 @@
 from flask import Blueprint, render_template, request, redirect, flash, session
 import json
 from utils.decorators import role_required
+<<<<<<< HEAD
 from models.job_model import create_company, get_all_companies, create_job, get_all_jobs, get_placement_stats, get_recent_placements, get_placement_filter_options, get_applications_by_job, get_job_by_id, update_application_stage, bulk_update_application_status
+=======
+from models.job_model import create_company, get_all_companies, create_job, get_all_jobs, get_placement_stats, get_recent_placements, get_placement_filter_options, get_applications_by_job, get_job_by_id, update_application_stage
+>>>>>>> 7f6cbeadd7686753c60ae4b9a2f2cf28e026661a
 from models.utility_model import create_notification, add_training_resource, get_all_notifications, get_all_training_resources, get_all_feedback
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
@@ -44,7 +48,10 @@ def dashboard():
         upcoming_drives=upcoming_drives,
         dept_data_json=json.dumps(stats['dept_data']),
         company_data_json=json.dumps(stats['company_data']),
+<<<<<<< HEAD
         timeline_json=json.dumps(stats['timeline']),
+=======
+>>>>>>> 7f6cbeadd7686753c60ae4b9a2f2cf28e026661a
         available_years=filter_options['years'],
         available_departments=filter_options['departments'],
         selected_year=selected_year,
@@ -113,6 +120,7 @@ def update_application_status_route(app_id):
         flash("Application status updated successfully.", "success")
     return redirect(f'/admin/job/{job_id}/applications')
 
+<<<<<<< HEAD
 @admin_bp.route('/job/<int:job_id>/applications/upload-status', methods=['POST'])
 @role_required('admin')
 def upload_application_status_csv_route(job_id):
@@ -152,6 +160,8 @@ def upload_application_status_csv_route(job_id):
         
     return redirect(f'/admin/job/{job_id}/applications')
 
+=======
+>>>>>>> 7f6cbeadd7686753c60ae4b9a2f2cf28e026661a
 @admin_bp.route('/utilities', methods=['GET', 'POST'])
 @role_required('admin')
 def utilities():

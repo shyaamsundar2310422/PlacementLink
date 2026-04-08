@@ -64,6 +64,7 @@
     </div>
 </div>
 
+<<<<<<< HEAD
 {% if not selected_year and stats.timeline %}
 <div class="card" style="margin-top: 2rem; background: linear-gradient(135deg, rgba(99,102,241,0.05) 0%, rgba(16,185,129,0.05) 100%); border: 1px solid var(--primary); opacity: 0.9;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
@@ -101,6 +102,8 @@
 </div>
 {% endif %}
 
+=======
+>>>>>>> 7f6cbeadd7686753c60ae4b9a2f2cf28e026661a
 <div class="card" style="margin-top: 2rem;">
     <h3><i class="fas fa-calendar-alt text-primary"></i> Upcoming Drive Calendar</h3>
     <div style="display: grid; gap: 1rem; margin-top: 1rem;">
@@ -161,7 +164,10 @@
 <script>
     const deptData = JSON.parse('{{ dept_data_json | safe }}');
     const companyData = JSON.parse('{{ company_data_json | safe }}');
+<<<<<<< HEAD
     const timelineData = JSON.parse('{{ timeline_json | safe }}');
+=======
+>>>>>>> 7f6cbeadd7686753c60ae4b9a2f2cf28e026661a
 
     const ctxDept = document.getElementById('deptChart').getContext('2d');
     new Chart(ctxDept, {
@@ -206,6 +212,7 @@
         },
         options: {
             responsive: true,
+<<<<<<< HEAD
             cutout: '70%',
             plugins: {
                 tooltip: {
@@ -292,5 +299,10 @@
             }
         });
     }
+=======
+            cutout: '70%'
+        }
+    });
+>>>>>>> 7f6cbeadd7686753c60ae4b9a2f2cf28e026661a
 </script>
 {% endblock %}
