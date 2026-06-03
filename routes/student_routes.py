@@ -1,10 +1,7 @@
-from flask import Blueprint, render_template, request, redirect, flash, session
+﻿from flask import Blueprint, render_template, request, redirect, flash, session
 from werkzeug.utils import secure_filename
 import os
-<<<<<<< HEAD
-=======
 import re
->>>>>>> 7f6cbeadd7686753c60ae4b9a2f2cf28e026661a
 from config import Config
 from utils.decorators import role_required
 from models.user_model import get_student_by_user_id
@@ -14,8 +11,6 @@ from models.utility_model import get_notifications_for_student, upload_document,
 
 student_bp = Blueprint('student', __name__, url_prefix='/student')
 
-<<<<<<< HEAD
-=======
 
 def _ctc_to_number(ctc_value):
     text = (ctc_value or '').lower()
@@ -46,7 +41,6 @@ def _get_selected_sort():
     selected_sort = request.args.get('sort', 'match').strip().lower()
     return selected_sort if selected_sort in allowed else 'match'
 
->>>>>>> 7f6cbeadd7686753c60ae4b9a2f2cf28e026661a
 def get_upcoming_drive_calendar():
     return [
         {
@@ -110,10 +104,7 @@ def profile():
 def jobs():
     student = get_student_by_user_id(session['user_id'])
     profile = get_student_profile(student['id'])
-<<<<<<< HEAD
-=======
     selected_sort = _get_selected_sort()
->>>>>>> 7f6cbeadd7686753c60ae4b9a2f2cf28e026661a
 
     profile_ready = bool(
         profile and any([
@@ -123,21 +114,12 @@ def jobs():
         ])
     )
 
-<<<<<<< HEAD
-    min_lpa = request.args.get('min_lpa')
-    sort_by = request.args.get('sort_by', 'match')
-    jobs_list = get_jobs_matching_profile(student['id'], min_lpa=min_lpa, sort_by=sort_by) if profile_ready else []
-=======
     jobs_list = get_jobs_matching_profile(student['id']) if profile_ready else []
     jobs_list = _sort_jobs(jobs_list, selected_sort)
->>>>>>> 7f6cbeadd7686753c60ae4b9a2f2cf28e026661a
     
     applications = get_student_applications(student['id'])
     applied_job_ids = [app['job_id'] for app in applications] if applications else []
 
-<<<<<<< HEAD
-    return render_template('student/jobs.html', jobs=jobs_list, applied_job_ids=applied_job_ids, profile_ready=profile_ready, min_lpa=min_lpa, sort_by=sort_by)
-=======
     return render_template(
         'student/jobs.html',
         jobs=jobs_list,
@@ -145,20 +127,11 @@ def jobs():
         profile_ready=profile_ready,
         selected_sort=selected_sort,
     )
->>>>>>> 7f6cbeadd7686753c60ae4b9a2f2cf28e026661a
 
 
 @student_bp.route('/all-jobs')
 @role_required('student')
 def all_jobs():
-<<<<<<< HEAD
-    min_lpa = request.args.get('min_lpa')
-    sort_by = request.args.get('sort_by', 'match')
-    jobs_list = get_all_active_jobs_with_match(student['id'], min_lpa=min_lpa, sort_by=sort_by)
-    applications = get_student_applications(student['id'])
-    applied_job_ids = [app['job_id'] for app in applications] if applications else []
-    return render_template('student/all_jobs.html', jobs=jobs_list, applied_job_ids=applied_job_ids, min_lpa=min_lpa, sort_by=sort_by)
-=======
     student = get_student_by_user_id(session['user_id'])
     selected_sort = _get_selected_sort()
     jobs_list = get_all_active_jobs_with_match(student['id'])
@@ -171,7 +144,6 @@ def all_jobs():
         applied_job_ids=applied_job_ids,
         selected_sort=selected_sort,
     )
->>>>>>> 7f6cbeadd7686753c60ae4b9a2f2cf28e026661a
 
 @student_bp.route('/jobs/apply/<int:job_id>', methods=['POST'])
 @role_required('student')

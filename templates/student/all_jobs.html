@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% block title %}All Opportunities{% endblock %}
 
 {% block content %}
@@ -7,33 +7,6 @@
         <h2><i class="fas fa-globe text-gradient"></i> All Job Opportunities</h2>
         <p class="text-muted">Showing all active openings with your profile-to-JD match score for each role.</p>
     </div>
-<<<<<<< HEAD
-    <a href="/student/jobs" class="btn" style="background: var(--surface-light); color: var(--text-main);">
-        <i class="fas fa-filter"></i> View Matched-Only Page
-    </a>
-</div>
-
-<div class="card" style="margin-bottom: 2rem; background: var(--surface-light); border: none;">
-    <form action="/student/all-jobs" method="GET" style="display: flex; gap: 1.5rem; align-items: flex-end; flex-wrap: wrap;">
-        <div class="form-group" style="margin-bottom: 0; min-width: 250px;">
-            <label for="min_lpa" style="display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem;"><i class="fas fa-money-bill-wave text-accent"></i> Filter by Minimum LPA</label>
-            <input type="number" step="0.5" name="min_lpa" id="min_lpa" value="{{ min_lpa or '' }}" placeholder="e.g. 10.0" class="form-control" style="background: var(--surface-main);">
-        </div>
-        <div class="form-group" style="margin-bottom: 0; min-width: 200px;">
-            <label for="sort_by" style="display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem;"><i class="fas fa-sort text-accent"></i> Sort By</label>
-            <select name="sort_by" id="sort_by" class="form-control" style="background: var(--surface-main);">
-                <option value="match" {% if sort_by == 'match' or not sort_by %}selected{% endif %}>Profile Match %</option>
-                <option value="salary" {% if sort_by == 'salary' %}selected{% endif %}>Salary (LPA)</option>
-            </select>
-        </div>
-        <div style="display: flex; gap: 0.5rem;">
-            <button type="submit" class="btn btn-primary">Apply Filter</button>
-            {% if min_lpa %}
-            <a href="/student/all-jobs" class="btn" style="background: var(--surface-main); color: var(--text-main); border: 1px solid var(--surface-light);">Clear</a>
-            {% endif %}
-        </div>
-    </form>
-=======
     <div style="display: flex; flex-wrap: wrap; gap: 0.8rem; align-items: center;">
         <a href="/student/jobs?sort={{ selected_sort }}" class="btn" style="background: var(--surface-light); color: var(--text-main);">
             <i class="fas fa-filter"></i> View Matched-Only Page
@@ -48,7 +21,6 @@
             </select>
         </form>
     </div>
->>>>>>> 7f6cbeadd7686753c60ae4b9a2f2cf28e026661a
 </div>
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1.5rem;">
@@ -77,6 +49,14 @@
                 <span class="badge badge-warning">Not a Strict Match</span>
                 {% endif %}
             </p>
+            {% if job.match_breakdown is defined %}
+            <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.6rem;">
+                <span class="badge" style="background: var(--surface-light); color: var(--text-main);">Skills {{ job.match_breakdown.skills }}%</span>
+                <span class="badge" style="background: var(--surface-light); color: var(--text-main);">Role {{ job.match_breakdown.role }}%</span>
+                <span class="badge" style="background: var(--surface-light); color: var(--text-main);">Academics {{ job.match_breakdown.academics }}%</span>
+                <span class="badge" style="background: var(--surface-light); color: var(--text-main);">Dept {{ job.match_breakdown.department }}%</span>
+            </div>
+            {% endif %}
         </div>
 
         <div style="background: var(--surface-light); padding: 1.2rem; border-radius: 8px; margin-bottom: 1.5rem; flex-grow: 1;">

@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% block title %}Placement Analytics Dashboard{% endblock %}
 
 {% block content %}
@@ -30,6 +30,7 @@
         <div style="display: flex; gap: 0.6rem; align-items: center;">
             <button type="submit" class="btn"><i class="fas fa-filter"></i> Apply Filters</button>
             <a href="/admin/dashboard" class="btn" style="background: var(--surface-light); color: var(--text-main);"><i class="fas fa-undo"></i> Reset</a>
+            <a href="/admin/dashboard/export?year={{ selected_year }}&department={{ selected_department }}" class="btn btn-primary"><i class="fas fa-download"></i> Export CSV</a>
         </div>
     </form>
 </div>
@@ -53,6 +54,11 @@
     </div>
 </div>
 
+<div class="card" style="margin-top: 2rem;">
+    <h3>Placement Trend</h3>
+    <canvas id="trendChart" width="900" height="260"></canvas>
+</div>
+
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem;">
     <div class="card">
         <h3>Department-wise Placements</h3>
@@ -64,46 +70,70 @@
     </div>
 </div>
 
-<<<<<<< HEAD
-{% if not selected_year and stats.timeline %}
-<div class="card" style="margin-top: 2rem; background: linear-gradient(135deg, rgba(99,102,241,0.05) 0%, rgba(16,185,129,0.05) 100%); border: 1px solid var(--primary); opacity: 0.9;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-        <h3><i class="fas fa-chart-area text-primary"></i> Multi-Year Performance Trend (2021 - 2025)</h3>
-        {% if stats.growth %}
-        <div style="display: flex; gap: 1.5rem;">
-            <div class="stat-mini">
-                <span class="text-muted" style="font-size: 0.8rem;">YoY Placement Growth</span>
-                <div style="font-weight: 700; color: {% if stats.growth.is_positive %}#10b981{% else %}#ef4444{% endif %};">
-                    <i class="fas fa-arrow-{% if stats.growth.is_positive %}up{% else %}down{% endif %}"></i> {{ stats.growth.placement_perc_change }}%
-                </div>
-            </div>
-            <div class="stat-mini">
-                <span class="text-muted" style="font-size: 0.8rem;">YoY Avg CTC Growth</span>
-                <div style="font-weight: 700; color: {% if stats.growth.avg_ctc_change >= 0 %}#10b981{% else %}#ef4444{% endif %};">
-                    <i class="fas fa-arrow-{% if stats.growth.avg_ctc_change >= 0 %}up{% else %}down{% endif %}"></i> {{ stats.growth.avg_ctc_change }} LPA
-                </div>
-            </div>
+<div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem; margin-top: 2rem;">
+    <div class="card">
+        <h3>Department Performance</h3>
+        <div class="table-container" style="margin-top: 1rem;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Department</th>
+                        <th>Total Students</th>
+                        <th>Placed</th>
+                        <th>Placement %</th>
+                        <th>Highest CTC</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for dept in department_performance %}
+                    <tr>
+                        <td>{{ dept.department }}</td>
+                        <td>{{ dept.total_students }}</td>
+                        <td>{{ dept.placed_students }}</td>
+                        <td>{{ dept.placement_percentage }}%</td>
+                        <td>{{ dept.highest_ctc }} LPA</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 2rem;">No department data available.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-        {% endif %}
     </div>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-        <div>
-            <h4 class="text-muted" style="margin-bottom: 1rem;">Placement Percentage Trend</h4>
-            <canvas id="trendChart" width="400" height="220"></canvas>
+
+    <div class="card">
+        <h3>Company Selection Ratios</h3>
+        <div class="table-container" style="margin-top: 1rem;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Company</th>
+                        <th>Apps</th>
+                        <th>Selected</th>
+                        <th>Ratio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for company in company_ratios %}
+                    <tr>
+                        <td>{{ company.company_name }}</td>
+                        <td>{{ company.total_applications }}</td>
+                        <td>{{ company.selected_count }}</td>
+                        <td>{{ company.selection_ratio }}%</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" style="text-align: center; padding: 2rem;">No application data available.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-        <div>
-            <h4 class="text-muted" style="margin-bottom: 1rem;">Compensation Progression (LPA)</h4>
-            <canvas id="ctcTrendChart" width="400" height="220"></canvas>
-        </div>
-    </div>
-    <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px dashed var(--glass-border); font-size: 0.9rem; color: var(--text-muted);">
-        <i class="fas fa-info-circle"></i> <strong>Pro Analysis:</strong> Based on the 5-year data, the institution has seen a steady <strong>{{ stats.growth.placement_perc_change }}%</strong> increase in placement rates compared to last year, with average compensation growing by <strong>{{ stats.growth.avg_ctc_change }} LPA</strong>.
     </div>
 </div>
-{% endif %}
 
-=======
->>>>>>> 7f6cbeadd7686753c60ae4b9a2f2cf28e026661a
 <div class="card" style="margin-top: 2rem;">
     <h3><i class="fas fa-calendar-alt text-primary"></i> Upcoming Drive Calendar</h3>
     <div style="display: grid; gap: 1rem; margin-top: 1rem;">
@@ -121,6 +151,40 @@
             </div>
         </div>
         {% endfor %}
+    </div>
+</div>
+
+<div class="card" style="margin-top: 2rem;">
+    <h3>Status Update Audit History</h3>
+    <div class="table-container" style="margin-top: 1rem;">
+        <table>
+            <thead>
+                <tr>
+                    <th>When</th>
+                    <th>Student</th>
+                    <th>Company</th>
+                    <th>Role</th>
+                    <th>Status Change</th>
+                    <th>Changed By</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in audit_history %}
+                <tr>
+                    <td>{{ item.changed_at }}</td>
+                    <td>{{ item.first_name }} {{ item.last_name }}<br><span class="text-muted" style="font-size: 0.85rem;">{{ item.register_number }}</span></td>
+                    <td>{{ item.company_name }}</td>
+                    <td>{{ item.title }}</td>
+                    <td>{{ item.previous_stage or 'New' }} &rarr; {{ item.new_stage }}</td>
+                    <td>{{ item.changed_by_username or 'System' }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 2rem;">No status changes have been audited yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 
@@ -164,10 +228,33 @@
 <script>
     const deptData = JSON.parse('{{ dept_data_json | safe }}');
     const companyData = JSON.parse('{{ company_data_json | safe }}');
-<<<<<<< HEAD
-    const timelineData = JSON.parse('{{ timeline_json | safe }}');
-=======
->>>>>>> 7f6cbeadd7686753c60ae4b9a2f2cf28e026661a
+    const trendData = JSON.parse('{{ trend_data_json | safe }}');
+
+    const ctxTrend = document.getElementById('trendChart').getContext('2d');
+    new Chart(ctxTrend, {
+        type: 'line',
+        data: {
+            labels: Object.keys(trendData).length ? Object.keys(trendData) : ['No Data'],
+            datasets: [{
+                label: 'Placed Students',
+                data: Object.keys(trendData).length ? Object.values(trendData) : [0],
+                borderColor: 'rgba(16, 185, 129, 1)',
+                backgroundColor: 'rgba(16, 185, 129, 0.18)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.35
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
 
     const ctxDept = document.getElementById('deptChart').getContext('2d');
     new Chart(ctxDept, {
@@ -212,97 +299,8 @@
         },
         options: {
             responsive: true,
-<<<<<<< HEAD
-            cutout: '70%',
-            plugins: {
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            let label = context.label || '';
-                            if (label) {
-                                label += ': ';
-                            }
-                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                            const value = context.parsed;
-                            const percentage = ((value / total) * 100).toFixed(1);
-                            label += value + ' (' + percentage + '%)';
-                            return label;
-                        }
-                    }
-                }
-            }
-        }
-    });
-
-    if (timelineData && timelineData.length > 0) {
-        const years = timelineData.map(d => d.year);
-        
-        // Placement Trend
-        const ctxTrend = document.getElementById('trendChart').getContext('2d');
-        new Chart(ctxTrend, {
-            type: 'line',
-            data: {
-                labels: years,
-                datasets: [{
-                    label: 'Placement %',
-                    data: timelineData.map(d => d.percentage),
-                    borderColor: '#6366f1',
-                    backgroundColor: 'rgba(99, 102, 241, 0.1)',
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: '#6366f1',
-                    pointRadius: 5
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: { 
-                    y: { 
-                        beginAtZero: true,
-                        max: 100,
-                        ticks: { callback: value => value + '%' }
-                    } 
-                }
-            }
-        });
-
-        // CTC Trend
-        const ctxCtcTrend = document.getElementById('ctcTrendChart').getContext('2d');
-        new Chart(ctxCtcTrend, {
-            type: 'line',
-            data: {
-                labels: years,
-                datasets: [
-                    {
-                        label: 'Avg CTC (LPA)',
-                        data: timelineData.map(d => d.avg_ctc),
-                        borderColor: '#10b981',
-                        borderWidth: 3,
-                        tension: 0.3,
-                        pointRadius: 4
-                    },
-                    {
-                        label: 'Highest CTC (LPA)',
-                        data: timelineData.map(d => d.highest_ctc),
-                        borderColor: '#f59e0b',
-                        borderDash: [5, 5],
-                        tension: 0.3,
-                        pointRadius: 4
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                scales: { 
-                    y: { beginAtZero: true } 
-                }
-            }
-        });
-    }
-=======
             cutout: '70%'
         }
     });
->>>>>>> 7f6cbeadd7686753c60ae4b9a2f2cf28e026661a
 </script>
 {% endblock %}

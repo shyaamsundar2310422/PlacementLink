@@ -12,9 +12,11 @@ def create_app():
     from routes.mentor_routes import mentor_bp
     from routes.admin_routes import admin_bp
     from models.profile_model import ensure_profile_request_review_columns, get_student_profile_review_notifications
+    from models.job_model import ensure_application_status_audit_table
     from models.user_model import get_student_by_user_id
 
     ensure_profile_request_review_columns()
+    ensure_application_status_audit_table()
     
     app.register_blueprint(auth_bp)
     app.register_blueprint(student_bp)

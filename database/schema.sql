@@ -109,6 +109,17 @@ CREATE TABLE application_status (
     FOREIGN KEY (application_id) REFERENCES applications(id) ON DELETE CASCADE
 );
 
+CREATE TABLE application_status_audit (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    application_id INT NOT NULL,
+    changed_by INT,
+    previous_stage VARCHAR(50),
+    new_stage VARCHAR(50) NOT NULL,
+    changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (application_id) REFERENCES applications(id) ON DELETE CASCADE,
+    FOREIGN KEY (changed_by) REFERENCES users(id) ON DELETE SET NULL
+);
+
 CREATE TABLE notifications (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(200) NOT NULL,
